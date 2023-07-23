@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace ApiTesting.Controllers
 {
@@ -16,8 +17,8 @@ namespace ApiTesting.Controllers
         public HttpResponseMessage Create(News n)
         {
             var db = new ApiContext();
-        
-            n.Date = DateTime.Now;
+
+            n.Date = DateTime.Now.Date;
             try
             {
                 db.Newslist.Add(n);
@@ -49,12 +50,12 @@ namespace ApiTesting.Controllers
             var db = new ApiContext();
             var exp = db.Newslist.Find(n.Id);
 
-            
+
             exp.Cat_Id = n.Cat_Id;
             exp.Title = n.Title;
             exp.Description = n.Description;
             n.Date = DateTime.Now;
-            
+
 
 
 
@@ -97,5 +98,56 @@ namespace ApiTesting.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, index);
 
         }
+        [HttpGet]
+        [Route("api/news/title/{title}")]
+        public HttpResponseMessage Get(string title)
+        {
+            var db = new ApiContext();
+            var data = (from p in db.Newslist
+                        where p.Title.Contains(title)
+                        select p).ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, data);
+        }
+
+        // feature
+
+
+
+        [HttpGet]
+        [Route("api/news/category/{name}")]
+        public HttpResponseMessage GetbyCatname(string cn)
+        {
+            var db = new ApiContext();
+            var data=(from i in db.Categories
+                      where i.Name.Equals(cn)
+                      select i.Newslist).ToList();  
+            //var db = new ApiContext();
+            //var data=(from c in db.Categories
+            //          where c.Name.Equals(cn)   
+            //          select c.Newslist).ToList();
+         
+
+            return Request.CreateResponse(HttpStatusCode.OK, data);
+
+        }
+
+
+
+
+        //    [HttpGet]
+        //    [Route("api/news/date")]
+        //    public HttpResponseMessage Get(DateTime d)
+        //    {
+
+        //        var db = new ApiContext();
+        //        var data=(from dt in db.Newslist
+        //                  where dt.Date.Date.Equals(d.Date)
+        //                  select dt).ToList();
+
+        //        return Request.CreateResponse(HttpStatusCode.OK, data);
+
+        //    }
+        //}
     }
 }
+

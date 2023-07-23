@@ -96,6 +96,16 @@ namespace ApiTesting.Controllers
             return Request.CreateResponse(HttpStatusCode.OK,index);
 
         }
+        [HttpGet]
+        [Route("api/news/name/{name}")]
+        public HttpResponseMessage Get(string name)
+        {
+            var db = new ApiContext();
+            var data = (from p in db.Categories
+                        where p.Name.Contains(name)
+                        select p).ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, data);
+        }
     }
 
     
