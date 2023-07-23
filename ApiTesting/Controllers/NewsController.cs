@@ -115,11 +115,11 @@ namespace ApiTesting.Controllers
 
         [HttpGet]
         [Route("api/news/category/{name}")]
-        public HttpResponseMessage GetbyCatname(string cn)
+        public HttpResponseMessage GetbyCatname(string name)
         {
             var db = new ApiContext();
             var data=(from i in db.Categories
-                      where i.Name.Equals(cn)
+                      where i.Name.Equals(name)
                       select i.Newslist).ToList();  
             //var db = new ApiContext();
             //var data=(from c in db.Categories
@@ -134,20 +134,32 @@ namespace ApiTesting.Controllers
 
 
 
-        //    [HttpGet]
-        //    [Route("api/news/date")]
-        //    public HttpResponseMessage Get(DateTime d)
-        //    {
+        [HttpGet]
+        [Route("api/news/date/{date}")]
+        public HttpResponseMessage Get(DateTime date)
+        {
 
-        //        var db = new ApiContext();
-        //        var data=(from dt in db.Newslist
-        //                  where dt.Date.Date.Equals(d.Date)
-        //                  select dt).ToList();
+            var db = new ApiContext();
+            var data = (from dt in db.Newslist
+                        where dt.Date==date
+                        select dt).ToList();
 
-        //        return Request.CreateResponse(HttpStatusCode.OK, data);
+            return Request.CreateResponse(HttpStatusCode.OK, data);
 
-        //    }
-        //}
+        }
+
+        [HttpGet]
+        [Route("api/news/date/category/{date}/{name}")]
+        public HttpResponseMessage Getbycatdate(DateTime date ,string name)
+        {
+            var db = new ApiContext();
+            var data =(from d in db.Newslist
+                       where d.Category.Name.Equals(name) && d.Date.Equals(date)
+                       select d).ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, data);
+        }
     }
 }
+
 
